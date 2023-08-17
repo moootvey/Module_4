@@ -1,0 +1,27 @@
+static: main.o f1.o f2.o libfunc.a
+	gcc main.o -L. -lfunc -o result
+	
+dynamic: main.o f1.o f2.o libfuncdyn.so
+	gcc main.o -L. -lfuncdyn -o resultdyn
+	
+dynamicload: main_dyn.c
+	gcc main_dyn.c -o resultdyn_load -ldl
+
+main.o: main.c
+	gcc -c main.c
+
+f1.o: f1.c
+	gcc -c f1.c
+
+f2.o: f2.c
+	gcc -c f2.c
+	
+libfunc.a: f1.o f2.o
+	ar rc libfunc.a f1.o f2.o
+	ranlib libfunc.a
+	
+libfuncdyn.so: f1.o f2.o
+	gcc -shared -o libfuncdyn.so f1.o f2.o
+	
+clean:
+	rm -rf *.o
